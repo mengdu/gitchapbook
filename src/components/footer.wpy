@@ -1,0 +1,21 @@
+<style>
+.weui-footer{
+    margin-top: 30px;
+}
+</style>
+<template>
+<view class="weui-footer">
+  <view class="weui-footer__links">
+      <navigator url="" class="weui-footer__link">git小书</navigator>
+  </view>
+  <view class="weui-footer__text">Copyright © 2017-2018 mengdu.github.io</view>
+</view>  
+</template>
+<script>
+import wepy from 'wepy'
+export default class footer extends wepy.component{
+  onLoad () {
+    console.log('load footer')
+  }
+}
+</script>

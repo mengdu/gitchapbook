@@ -1,0 +1,77 @@
+<style>
+  @import '../../wxParse/wxParse.wxss';
+  .article-box{
+    background: #fff;
+    padding: 10px;
+  }
+  .article-box .article-title{
+      font-size: 20px;
+  }
+  .article-box .article-info{
+    margin: 5px 0;
+    color: #AFAFAF;
+    font-size: 13px;
+  }
+  .article-box .article-content{
+    border-top: solid 1px #E4E4E4;
+    padding: 10px 0;
+  }
+  .article-box .article-content image{
+    display: block;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  .m-icon{
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+  }
+</style>
+<template>
+<view class="article-box">
+  <view class="article-title">wepy - 一个小程序的组件化开发框架</view>
+  <view class="article-info">
+      <text class="titme">今天</text>
+  </view>
+  <view class="article-content">
+    <image src="/imgs/ssss.png"></image>
+    <import src="../../wxParse/wxParse.wxml"/>
+
+    <template is="wxParse" data="{{wxParseData:content.nodes}}"/>
+
+  </view>
+</view>
+<view class="body">
+  <button open-type="share"><image src="/imgs/share.png" class="m-icon"></image> 分享文章</button>
+</view>
+</template>
+
+<script>
+import wepy from 'wepy'
+// import footer from '../../components/footer'
+const WxParse = require('../../wxParse/wxParse.js')
+export default class home extends wepy.page {
+  config = {
+    // navigationBarBackgroundColor: '#ccc'
+  }
+  data = {
+  }
+  onLoad () {
+    var article = `
+# test 
+
+### asdfd
+
+> asdf
+
+** asdfasd **
+
+asdf
+asdfasd
+asdfasd
+    `
+    var that = this
+    WxParse.wxParse('content', 'md', article, that, 5)
+  }
+}
+</script>
