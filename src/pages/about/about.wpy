@@ -50,20 +50,28 @@
 import wepy from 'wepy'
 // import footer from '../../components/footer'
 const WxParse = require('../../wxParse/wxParse.js')
-export default class article extends wepy.page {
-  data = {
-    content: ''
-  }
+export default class about extends wepy.page {
   config = {
     // navigationBarBackgroundColor: '#ccc'
   }
-  onLoad (options) {
-    console.log(options, this.$parent)
-    this.$parent.getUserInfo((data) => {
-      console.log(data)
-    })
+  data = {
+  }
+  onLoad () {
+    var article = `
+# test 
+
+### asdfd
+
+> asdf
+
+** asdfasd **
+
+asdf
+asdfasd
+asdfasd
+    `
     var that = this
-    WxParse.wxParse('content', 'md', this.content, that, 5)
+    WxParse.wxParse('content', 'md', article, that, 5)
   }
 }
 </script>

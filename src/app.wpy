@@ -26,6 +26,9 @@ page{
   border-bottom-left-radius: 5px; 
   border-bottom-right-radius: 5px; 
 }
+.weui-media-box__title{
+  white-space: normal;
+}
 .weui-cell_active{
   background: #F1F1F1;
 }
@@ -43,12 +46,9 @@ page{
 .m-loadmore .weui-loadmore__tips_in-line{
   color: #fff;
 }
-.article-cover{
-  margin: 10rpx 0;
-  width: 100%;
-  max-height: 150px;
+.weui-media-box__desc{
+  color: #1A1A1A;
 }
-
 
 
 .body{
@@ -85,8 +85,9 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
+      'pages/home/home',
       'pages/home/article',
-      'pages/home/home'
+      'pages/about/about'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -106,7 +107,7 @@ export default class extends wepy.app {
           selectedIconPath: 'imgs/home-focus.png'
         },
         {
-          pagePath: 'pages/home/article',
+          pagePath: 'pages/about/about',
           text: '关于',
           iconPath: 'imgs/info.png',
           selectedIconPath: 'imgs/info-focus.png'
@@ -123,24 +124,7 @@ export default class extends wepy.app {
     super()
     this.use('requestfix')
   }
-
-  onLaunch() {
-    this.testAsync()
-  }
-
-  sleep (s) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('promise resolved')
-      }, s * 1000)
-    })
-  }
-
-  async testAsync () {
-    const data = await this.sleep(3)
-    console.log(data)
-  }
-
+  
   getUserInfo(cb) {
     const that = this
     if (this.globalData.userInfo) {

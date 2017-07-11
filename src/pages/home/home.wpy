@@ -17,6 +17,70 @@
     width: 100%;
     top: 0;
   }
+
+  .box{
+    padding: 15px;
+    background: #fff;
+    border: solid 1rpx #E0E0E0;
+    border-radius: 3px;
+  }
+  .article-list{
+  
+  }
+  .article-list .article-item{
+    padding: 15px;
+    background: #fff;
+    border: solid 1rpx #E0E0E0;
+    border-top: none;
+    box-sizing: border-box;
+    min-height: 100px;
+  }
+  .article-list .article-item:first-child{
+    border-top: solid 1px #E0E0E0;
+    border-radius: 3px 3px 0 0;
+  }
+  .article-list .article-item:last-child{
+    border-radius: 0 0 3px 3px;
+  }
+  .article-item .article-title{
+    margin-bottom: 10px;
+    font-size: 14pt;
+  }
+  .article-list .article-item-active{
+    background: #F1F1F1;
+  }
+  .article-cover-box{
+    margin: 10rpx 0;
+  }
+  .article-cover-box image{
+    max-height: 180px;
+    width: 100%;
+  }
+  .article-cover-box.mini-cover{
+    height: 60px;
+    width: 60px;
+    margin-right: 15px;
+    font-size: 0;
+    float: left;
+  }
+  .article-cover-box.mini-cover image{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+  .article-item .article-des{
+    font-size: 10pt;
+    line-height:1.2;
+
+    font-size:13px;
+    line-height:1.2;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+
+  }
 </style>
 <template>
 <view class="home-banner">
@@ -24,9 +88,9 @@
     class="swiper-box"
     indicator-dots="{{indicatorDots}}"
     autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
-    <block wx:for="{{imgUrls}}" wx:key>
+    <block wx:for="{{banners}}" wx:key>
       <swiper-item>
-        <image src="{{item}}" class="slide-image"/>
+        <image src="{{item.cover}}" class="slide-image"/>
       </swiper-item>
     </block>
   </swiper>
@@ -45,97 +109,62 @@
   <view class="weui-loadmore weui-loadmore_line m-loadmore">
     <view class="weui-loadmore__tips weui-loadmore__tips_in-line">今天</view>
   </view>
-  <view class="weui-panel weui-panel_access">
-    <view class="weui-panel__bd">
-        <navigator url="article" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-            <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-                <image class="weui-media-box__thumb" src="/imgs/logo.png" />
-            </view>
-            <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                <view class="weui-media-box__title">标题一</view>
-                <view class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</view>
-            </view>
-        </navigator>
-        <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-            <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-                <image class="weui-media-box__thumb" src="/imgs/fenbu.png" />
-            </view>
-            <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                <view class="weui-media-box__title">标题二</view>
-                <view class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</view>
-            </view>
-        </navigator>
-        </navigator>
-        <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-        <view class="weui-media-box__hd weui-media-box_text">
-            <view class="weui-media-box__title weui-media-box__title_in-text">标题二</view>
-            <view class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</view>
+
+  <view class="article-list">
+    <navigator url="article?index={{index}}" class="article-item" hover-class="article-item-active"
+      wx:for="{{articleList}}"
+      wx:key="item"
+      >
+      <block 
+        wx:if="{{item.show == 'big'}}"
+        >
+        <view class="article-title">{{item.title}}</view>
+        <view class="article-cover-box">
+          <image class="article-cover" src="{{item.info.cover}}" />
         </view>
-        </navigator>
-        <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-        <view class="weui-media-box__hd weui-media-box_text">
-            <view class="weui-media-box__title weui-media-box__title_in-text">wepy - 一个小程序的组件化开发框架</view>
-            <view class="weui-media-box__info">
-              <text class="time">2016年11月23日</text>
-            </view>
-            <view class="weui-media-box__cover">
-               <image class="article-cover" src="/imgs/ssss.png" />
-            </view>
-            <view class="weui-media-box__desc">小程序框架wepy文档 Github地址 快速入门 项目创建与使用 安装wepy 以下安装都通过npm安装 安装 wepy 命令行工具。 {代码...} 在开发目录生成开发DEMO。</view>
+        <view class="article-des">{{item.abstrast}}</view>
+      </block>
+      <view
+        wx:elif="{{item.info.cover && item.show === 'mini'}}"
+        >
+        <view class="article-cover-box mini-cover">
+          <image class="article-cover" src="{{item.info.cover}}" />
         </view>
-        </navigator>
-    </view>
+        <view>
+          <view class="article-title">{{item.title}}</view>
+          <view class="article-des">{{item.abstrast}}</view>
+        </view>
+      </view>
+      <view
+        wx:else
+        >
+          <view class="article-title">{{item.title}}</view>
+          <view class="article-des">{{item.abstrast}}</view>
+      </view>
+    </navigator>
+
+
+    <!-- <navigator url="" class="article-item" hover-class="article-item-active">
+      
+      <view class="article-cover-box mini-cover">
+        <image class="article-cover" src="/imgs/ssss.png" />
+      </view>
+      <view>
+        <view class="article-title">文章标题</view>
+        <view class="article-des">
+          wepy - 一个小程序的组件化开发框架wepy - 一个小程序的组件化开发框架
+        </view>
+      </view>
+      
+    </navigator>
+    <navigator url="" class="article-item" hover-class="article-item-active">
+      <view class="article-title">文章标题</view>
+      <view class="article-des">
+        wepy - 一个小程序的组件化开发框架wepy - 一个小程序的组件化开发框架
+      </view>
+    </navigator> -->
   </view>
   
-
-  <view class="weui-loadmore weui-loadmore_line m-loadmore">
-    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">1:0</view>
-  </view>
-  <view class="weui-panel weui-panel_access">
-    <view class="weui-panel__bd">
-        <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-        <view class="weui-media-box__hd weui-media-box_text">
-            <view class="weui-media-box__title weui-media-box__title_in-text">wepy - 一个小程序的组件化开发框架</view>
-            <view class="weui-media-box__info">
-              <text class="time">2016年11月23日</text>
-            </view>
-            <view class="weui-media-box__cover">
-               <image class="article-cover" src="/imgs/ssss.png" />
-            </view>
-            <view class="weui-media-box__desc">小程序框架wepy文档 Github地址 快速入门 项目创建与使用 安装wepy 以下安装都通过npm安装 安装 wepy 命令行工具。 {代码...} 在开发目录生成开发DEMO。</view>
-        </view>
-        </navigator>
-        <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-            <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-                <image class="weui-media-box__thumb" src="/imgs/logo.png" />
-            </view>
-            <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                <view class="weui-media-box__title">标题一</view>
-                <view class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</view>
-            </view>
-        </navigator>
-    </view>
-  </view>
-
-  <view class="weui-loadmore weui-loadmore_line m-loadmore">
-    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">昨天</view>
-  </view>
-  <view class="weui-panel weui-panel_access">
-    <view class="weui-panel__bd">
-        <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-        <view class="weui-media-box__hd weui-media-box_text">
-            <view class="weui-media-box__title weui-media-box__title_in-text">标题一</view>
-            <view class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</view>
-        </view>
-        </navigator>
-        <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-        <view class="weui-media-box__hd weui-media-box_text">
-            <view class="weui-media-box__title weui-media-box__title_in-text">标题二</view>
-            <view class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</view>
-        </view>
-        </navigator>
-    </view>
-  </view>
 </view>
 <footer></footer>
 </template>
@@ -143,21 +172,73 @@
 <script>
 import wepy from 'wepy'
 import footer from '../../components/footer'
+import {ArticleListDbPath, WEBROOT, BannerDbPath} from '../../lib/api'
 export default class home extends wepy.page {
   data = {
-    imgUrls: [
+    /*imgUrls: [
       'http://upload.jianshu.io/admin_banners/web_images/3152/efdcde6cfdea4eed76a684ab781f3dc5cf8493c1.jpg',
       'http://upload.jianshu.io/admin_banners/web_images/3150/09767f9923dfa51da4a40ca79f167c9a3f543106.jpg',
       'http://upload.jianshu.io/admin_banners/web_images/3157/c9a2f686b8ef67239451e6875cdce4d98cfc8362.jpg',
       'http://upload.jianshu.io/admin_banners/web_images/3156/caf4a6edf1ea0074a95641589cdcec5ee0e2573d.jpg'
-    ],
+    ],*/
+    banners: [],
     indicatorDots: false,
     autoplay: true,
     interval: 5000,
-    duration: 1000
+    duration: 1000,
+    articleList: []
+  }
+  toUrl (url) {
+    return url.search(/https|http/) > -1 ? url : WEBROOT + '/' + url
+  }
+  fillterArticle (data) {
+    for (let i in data) {
+      let article = data[i]
+      console.log(article)
+      if (article.info.cover) {
+        article.info.cover = this.toUrl(article.info.cover)
+      }
+    }
+    console.log(data)
+    return data
+  }
+  getBannerList () {
+    wepy.request({
+      url: BannerDbPath,
+      success: (res) => {
+        console.log(res.data)
+        this.setData('banners', res.data)
+      },
+      fail (err) {
+        wepy.showModal({
+          title: '提示',
+          content: '请求错误了，信息：' + err
+        })
+      }
+    })
+  }
+  getArticleList () {
+    wepy.request({
+      url: ArticleListDbPath,
+      success: (res) => {
+        this.setData('articleList', this.fillterArticle(res.data))
+      },
+      fail (err) {
+        wepy.showModal({
+          title: '提示',
+          content: '请求错误了，信息：' + err
+        })
+      }
+    })
   }
   components = {
     footer
+  }
+  onLoad () {
+    var app = getApp()
+    console.log(this.$parent.getUserInfo())
+    this.getArticleList()
+    this.getBannerList()
   }
 }
 </script>
