@@ -115,7 +115,7 @@ export default class extends wepy.app {
       ]
     }
   }
-
+  articleList = []
   globalData = {
     userInfo: null
   }

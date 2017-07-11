@@ -29,41 +29,62 @@
 </style>
 <template>
 <view class="article-box">
-  <view class="article-title">wepy - 一个小程序的组件化开发框架</view>
+  <view class="article-title">{{article.title}}</view>
   <view class="article-info">
-      <text class="titme">今天</text>
+      <text class="titme">{{article.info.title}}</text>
   </view>
   <view class="article-content">
-    <image src="/imgs/ssss.png"></image>
+    <!-- <image src="/imgs/ssss.png"></image> -->
     <import src="../../wxParse/wxParse.wxml"/>
 
     <template is="wxParse" data="{{wxParseData:content.nodes}}"/>
 
   </view>
 </view>
-<view class="body">
+<!-- <view class="body">
   <button open-type="share"><image src="/imgs/share.png" class="m-icon"></image> 分享文章</button>
-</view>
-</template>
+</view>-->
+</template> 
 
 <script>
 import wepy from 'wepy'
 // import footer from '../../components/footer'
 const WxParse = require('../../wxParse/wxParse.js')
+
+import {WEBROOT} from '../../lib/api'
 export default class article extends wepy.page {
   data = {
-    content: ''
+    content: '',
+    article: {}
   }
   config = {
     // navigationBarBackgroundColor: '#ccc'
   }
+  parse () {
+    WxParse.wxParse('content', 'md', this.content, this, 5)
+  }
+  wxparseimgload () {
+    console.log("xxxxxxx")
+  }
   onLoad (options) {
-    console.log(options, this.$parent)
-    this.$parent.getUserInfo((data) => {
-      console.log(data)
+    console.log(options, this.$parent.articleList[options.index])
+    this.article = this.$parent.articleList[options.index]
+    this.$apply()
+    wepy.request({
+      url: WEBROOT + '/' + this.article.info.url,
+      dataType: 'text',
+      success: (res) => {
+        // console.log(res.data)
+        this.content = res.data
+        this.parse()
+      },
+      fail (err) {
+        wepy.showModal({
+          title: '提示',
+          content: '请求错误了，信息：' + err
+        })
+      }
     })
-    var that = this
-    WxParse.wxParse('content', 'md', this.content, that, 5)
   }
 }
 </script>
