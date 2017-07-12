@@ -21,17 +21,12 @@
     max-width: 100%;
     margin: 0 auto;
   }
-  .m-icon{
-    width: 24px;
-    height: 24px;
-    vertical-align: middle;
-  }
 </style>
 <template>
 <view class="article-box">
   <view class="article-title">{{article.title}}</view>
   <view class="article-info">
-      <text class="titme">{{article.info.title}}</text>
+      <text class="titme">{{article.info.time}}</text>
   </view>
   <view class="article-content">
     <!-- <image src="/imgs/ssss.png"></image> -->
@@ -41,42 +36,58 @@
 
   </view>
 </view>
-<!-- <view class="body">
-  <button open-type="share"><image src="/imgs/share.png" class="m-icon"></image> 分享文章</button>
-</view>-->
-</template> 
+<button open-type="share" class="share-btn" @tap="handleShare">
+  <image src="/imgs/logo.png" class="m-icon"></image>
+  <text class="share-text">分享文章</text>
+</button>
+<footer></footer>
+</template>
 
 <script>
 import wepy from 'wepy'
+import footer from '../../components/footer'
 // import footer from '../../components/footer'
 const WxParse = require('../../wxParse/wxParse.js')
-
 import {WEBROOT} from '../../lib/api'
 export default class article extends wepy.page {
-  data = {
-    content: '',
-    article: {}
-  }
   config = {
     // navigationBarBackgroundColor: '#ccc'
+    // navigationBarTitleText: 'git小书 - ' 
+  }
+  data = {
+    article: {},
+    markdown: ''
+  }
+  onShareAppMessage () {
+    console.log('onShareAppMessage')
+  }
+  methods = {
+    handleShare () {
+      console.log('share')
+      wepy.showShareMenu({
+        withShareTicket: true
+      })
+    }
+  }
+  components = {
+    footer
   }
   parse () {
-    WxParse.wxParse('content', 'md', this.content, this, 5)
-  }
-  wxparseimgload () {
-    console.log("xxxxxxx")
+    let type = this.article.info.type || 'md'
+    WxParse.wxParse('content', type, this.markdown, this, 5)
   }
   onLoad (options) {
-    console.log(options, this.$parent.articleList[options.index])
-    this.article = this.$parent.articleList[options.index]
-    this.$apply()
+    wepy.showLoading()
+    this.article = this.$parent.articleList[options.date][options.index]
+    wepy.setNavigationBarTitle({title: 'git小书 - ' + this.article.title})
     wepy.request({
       url: WEBROOT + '/' + this.article.info.url,
       dataType: 'text',
       success: (res) => {
         // console.log(res.data)
-        this.content = res.data
+        this.markdown = res.data
         this.parse()
+        wepy.hideLoading()
       },
       fail (err) {
         wepy.showModal({
@@ -85,6 +96,7 @@ export default class article extends wepy.page {
         })
       }
     })
+    
   }
 }
 </script>

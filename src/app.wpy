@@ -1,7 +1,7 @@
 <style>
 @import 'weui.wxss';
 page{
-  background-color: #EBEBEB;
+  background-color: #EFEFF4;
   font-size: 13pt;
 }
 .weui-panel{
@@ -49,7 +49,34 @@ page{
 .weui-media-box__desc{
   color: #1A1A1A;
 }
-
+/*分享按钮*/
+.share-btn {
+  position: fixed;
+  bottom: 20rpx;
+  background: rgba(64,88,160,0.9);
+  width: 150rpx;
+  height: 50rpx;
+  margin: 0 auto;
+  left:0;  
+  right:0;  
+  border-radius: 50px;
+  overflow: hidden;
+  text-align: center;
+  line-height: 1.4;
+  padding: 5px 10px;
+  box-sizing: content-box;
+  z-index: 100;
+}
+.share-btn .m-icon{
+  width: 24rpx;
+  height: 24rpx;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.share-btn .share-text{
+  font-size: 10pt;
+  color: #fff;
+}
 
 .body{
   padding: 10px;

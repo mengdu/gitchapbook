@@ -8,7 +8,7 @@
   <view class="weui-footer__links">
       <navigator url="" class="weui-footer__link">git小书</navigator>
   </view>
-  <view class="weui-footer__text">Copyright © 2017-2018 mengdu.github.io</view>
+  <view class="weui-footer__text">make by mengdu.github.io</view>
 </view>  
 </template>
 <script>

@@ -17,7 +17,20 @@
     width: 100%;
     top: 0;
   }
-
+  .swiper-box .cover-title{
+    position: absolute;
+    padding: 10px 15px;
+    bottom: 0;
+    color: #fff;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .weui-loadmore__tips_in-line{
+    font-size: 10pt;
+  }
   .box{
     padding: 15px;
     background: #fff;
@@ -37,10 +50,12 @@
   }
   .article-list .article-item:first-child{
     border-top: solid 1px #E0E0E0;
-    border-radius: 3px 3px 0 0;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
   }
   .article-list .article-item:last-child{
-    border-radius: 0 0 3px 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
   }
   .article-item .article-title{
     margin-bottom: 10px;
@@ -71,7 +86,7 @@
   .article-item .article-des{
     font-size: 10pt;
     line-height:1.2;
-
+    color: #888;
     font-size:13px;
     line-height:1.2;
     overflow:hidden;
@@ -79,7 +94,23 @@
     display:-webkit-box;
     -webkit-box-orient:vertical;
     -webkit-line-clamp:2;
+  }
 
+  .line-border{width:100%;position:relative; display:table;}
+  .line-border:after{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid #282C34;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 200%;
+    height: 200%;
+    -webkit-transform: scale(0.5);
+    transform: scale(0.5);
+    -webkit-transform-origin: left top;
+    transform-origin: left top;
   }
 </style>
 <template>
@@ -91,6 +122,9 @@
     <block wx:for="{{banners}}" wx:key>
       <swiper-item>
         <image src="{{item.cover}}" class="slide-image"/>
+        <view class="cover-title">
+          {{item.title}}
+        </view>
       </swiper-item>
     </block>
   </swiper>
@@ -106,13 +140,21 @@
   </view> -->
 </view>
 <view class="body">
+  
+
+
+  <block
+    wx:for="{{articleList}}"
+    wx:for-index="date"
+    wx:key="index"
+    >
   <view class="weui-loadmore weui-loadmore_line m-loadmore">
-    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">今天</view>
+    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">{{date}}</view>
   </view>
 
   <view class="article-list">
-    <navigator url="article?index={{index}}" class="article-item" hover-class="article-item-active"
-      wx:for="{{articleList}}"
+    <navigator url="article?date={{date}}&index={{index}}" class="article-item" hover-class="article-item-active"
+      wx:for="{{item}}"
       wx:key="item"
       >
       <block 
@@ -164,7 +206,7 @@
       </view>
     </navigator> -->
   </view>
-  
+  </block>
 </view>
 <footer></footer>
 </template>
@@ -173,14 +215,22 @@
 import wepy from 'wepy'
 import footer from '../../components/footer'
 import {ArticleListDbPath, WEBROOT, BannerDbPath} from '../../lib/api'
+import {format} from '../../lib/utils'
 export default class home extends wepy.page {
+  config = {
+    enablePullDownRefresh: true,
+    backgroundTextStyle: 'dark',
+    backgroundColor: '#282C34'
+  }
   data = {
-    /*imgUrls: [
+    /*
+    imgUrls: [
       'http://upload.jianshu.io/admin_banners/web_images/3152/efdcde6cfdea4eed76a684ab781f3dc5cf8493c1.jpg',
       'http://upload.jianshu.io/admin_banners/web_images/3150/09767f9923dfa51da4a40ca79f167c9a3f543106.jpg',
       'http://upload.jianshu.io/admin_banners/web_images/3157/c9a2f686b8ef67239451e6875cdce4d98cfc8362.jpg',
       'http://upload.jianshu.io/admin_banners/web_images/3156/caf4a6edf1ea0074a95641589cdcec5ee0e2573d.jpg'
-    ],*/
+    ],
+    */
     banners: [],
     indicatorDots: false,
     autoplay: true,
@@ -194,13 +244,35 @@ export default class home extends wepy.page {
   fillterArticle (data) {
     for (let i in data) {
       let article = data[i]
-      console.log(article)
+      // console.log(article)
       if (article.info.cover) {
         article.info.cover = this.toUrl(article.info.cover)
       }
     }
-    console.log(data)
+    // console.log(data)
     return data
+  }
+  sortArticleList (data) {
+    var tdata = data.map(e => {
+      e.info.time = format(e.info.time, 'yyyy-MM-dd')
+      return e
+    })
+    tdata.sort((a, b) => {
+      console.log(b.info.time , a.info.time, b.info.time > a.info.time)
+      return b.info.time > a.info.time
+    })
+
+    let list = {}
+    for (let i in tdata) {
+      let article = tdata[i]
+      let date = article.info.time
+      if (list[date]) {
+        list[date].push(article)
+      } else {
+        list[date] = [article]
+      }
+    }
+    return list
   }
   getBannerList () {
     wepy.request({
@@ -217,13 +289,15 @@ export default class home extends wepy.page {
       }
     })
   }
-  getArticleList () {
+  getArticleList (cb) {
     wepy.request({
       url: ArticleListDbPath,
       success: (res) => {
-        let list = this.fillterArticle(res.data)
+        let list = this.sortArticleList(this.fillterArticle(res.data))
         this.$parent.articleList = list
+        console.log(list)
         this.setData('articleList', list)
+        cb && cb(list)
       },
       fail (err) {
         wepy.showModal({
@@ -235,6 +309,18 @@ export default class home extends wepy.page {
   }
   components = {
     footer
+  }
+  onPullDownRefresh () {
+    console.log('下拉刷新')
+    this.getArticleList(() => {
+      setTimeout(function () {
+        wepy.stopPullDownRefresh()
+      }, 800)
+      
+    })
+  }
+  onShareAppMessage () {
+    console.log('onShareAppMessage')
   }
   onLoad () {
     this.getArticleList()
